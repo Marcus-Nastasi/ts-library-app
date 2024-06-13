@@ -1,10 +1,13 @@
-import dotenv from 'dotenv';
+require('dotenv').config();
 import express from 'express';
-import { Server } from 'http';
 import path from 'path';
+import { router } from './routes/router';
 
-dotenv.config();
 const app = express();
+
+app.use(express.json());
+
+app.use(router);
 
 app.listen(3030, () => console.log('http://localhost:3030/'));
 
