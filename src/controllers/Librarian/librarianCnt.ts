@@ -49,6 +49,16 @@ export const insert = async (req: Request, res: Response) => {
    }
 };
 
+export const update = async (req: Request, res: Response) => {
+   try {
+      const { name, cpf } = req.body; 
+      await sql.query('UPDATE librarians SET name=$1, cpf=$2 WHERE(id=$3)', [ name, cpf, req.params.id ]);
+      return res.status(202).json({ data: { status: 'updated' } }).end();
+   } catch(e) {
+      console.log(e);
+   }
+};
+
 export const del = async (req: Request, res: Response) => {
    try {
       await sql.query('DELETE FROM librarians WHERE (id=$1)', [ req.params.id ]);
