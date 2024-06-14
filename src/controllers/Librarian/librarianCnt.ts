@@ -23,8 +23,8 @@ export const getSingle = async (req: Request, res: Response) => {
 
 export const validPass = async (req: Request, res: Response) => {
    try {
-      const response = await sql.query('SELECT * FROM librarians WHERE (id=$1);', [ req.params.id ]);
-      const password = await response.rows[0].password;
+      const response: any = await sql.query('SELECT * FROM librarians WHERE (id=$1);', [ req.params.id ]);
+      const password: string = await response.rows[0].password;
       const valid: Promise<boolean> = bcrypt.compare(req.body.password, password);
       valid ? res.status(202).json({ data: { status: 'valid' } }).end() : res.status(401).json({ data: { status: 'not valid' } }).end();
    } catch(e) {
@@ -42,8 +42,17 @@ export const insert = async (req: Request, res: Response) => {
       const response = await sql.query(
          'INSERT INTO librarians (id, name, cpf, password) VALUES ($1, $2, $3, $4);', [ id, name, cpf, encoded ]
       );
-      
+
       res.status(201).json({ data: { status: 'created' } }).end();
+   } catch(e) {
+      console.log(e);
+   }
+};
+
+export const del = async (req: Request, res: Response) => {
+   try {
+      await sql.query('DELETE FROM librarians WHERE (id=$1)', [ req.params.id ]);
+      return res.status(202).json({ data: { status: 'deleted' } }).end();
    } catch(e) {
       console.log(e);
    }
