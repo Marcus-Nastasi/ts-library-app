@@ -26,7 +26,10 @@ export const validPass = async (req: Request, res: Response) => {
       const response: any = await sql.query('SELECT * FROM librarians WHERE (id=$1);', [ req.params.id ]);
       const password: string = await response.rows[0].password;
       const valid: Promise<boolean> = bcrypt.compare(req.body.password, password);
-      valid ? res.status(202).json({ data: { status: 'valid' } }).end() : res.status(401).json({ data: { status: 'not valid' } }).end();
+
+      valid ? 
+         res.status(202).json({ data: { status: 'valid' } }).end() : 
+         res.status(401).json({ data: { status: 'not valid' } }).end();
    } catch(e) {
       console.log(e);
    }
@@ -39,8 +42,9 @@ export const insert = async (req: Request, res: Response) => {
       const salt: string = await bcrypt.genSalt(10);
       const encoded: string = await bcrypt.hash(password, salt);
 
-      const response = await sql.query(
-         'INSERT INTO librarians (id, name, cpf, password) VALUES ($1, $2, $3, $4);', [ id, name, cpf, encoded ]
+      await sql.query(
+         'INSERT INTO librarians (id, name, cpf, password) VALUES ($1, $2, $3, $4);', 
+         [ id, name, cpf, encoded ]
       );
 
       res.status(201).json({ data: { status: 'created' } }).end();
