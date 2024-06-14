@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 
-export const getAll = async (req: Request, res: Response) => {
+export const getAll = async (req: Request, res: Response): Promise<void> => {
    try {
       const response = await sql.query('SELECT * FROM librarians;');
       res.status(200).json({ data: response.rows }).end();
@@ -12,7 +12,7 @@ export const getAll = async (req: Request, res: Response) => {
    }
 };
 
-export const getSingle = async (req: Request, res: Response) => {
+export const getSingle = async (req: Request, res: Response): Promise<void> => {
    try {
       const response = await sql.query('SELECT * FROM librarians WHERE (id=$1);', [ req.params.id ]);
       res.status(200).json({ data: response.rows }).end();
@@ -21,7 +21,7 @@ export const getSingle = async (req: Request, res: Response) => {
    }
 };
 
-export const validPass = async (req: Request, res: Response) => {
+export const validPass = async (req: Request, res: Response): Promise<void> => {
    try {
       const response: any = await sql.query('SELECT * FROM librarians WHERE (id=$1);', [ req.params.id ]);
       const password: string = await response.rows[0].password;
@@ -35,7 +35,7 @@ export const validPass = async (req: Request, res: Response) => {
    }
 };
 
-export const insert = async (req: Request, res: Response) => {
+export const insert = async (req: Request, res: Response): Promise<void> => {
    try {
       const id = randomUUID();
       const { name, cpf, password } = req.body;
@@ -53,7 +53,7 @@ export const insert = async (req: Request, res: Response) => {
    }
 };
 
-export const update = async (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response): Promise<any> => {
    try {
       const { name, cpf } = req.body; 
       await sql.query('UPDATE librarians SET name=$1, cpf=$2 WHERE(id=$3)', [ name, cpf, req.params.id ]);
@@ -63,7 +63,7 @@ export const update = async (req: Request, res: Response) => {
    }
 };
 
-export const del = async (req: Request, res: Response) => {
+export const del = async (req: Request, res: Response): Promise<any> => {
    try {
       await sql.query('DELETE FROM librarians WHERE (id=$1)', [ req.params.id ]);
       return res.status(202).json({ data: { status: 'deleted' } }).end();
